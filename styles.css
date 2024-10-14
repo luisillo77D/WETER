@@ -1,0 +1,30 @@
+*{
+}
+
+body{
+    background-color: hsl(211, 100%, 70%);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.most-heat{
+    background-image: url(../img/heat.jpg);
+    background-size:cover ;
+}
+
+.presave-cont{
+    width: 40%;
+}
+.location{
+    color: rgb(0, 0, 0);
+}
+
+.card-main{
+    background-color: rgb(255, 255, 255, .1);
+    color: rgb(0, 0, 0);
+}
+
+.temp{
+    color: rgb(29, 14, 43);
+}
