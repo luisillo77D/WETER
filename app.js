@@ -40,15 +40,38 @@ const EliminarDeLocalStorage = (key) => {
 };
 
 const eliminarCiudad = (ciudad) => {
-    const storedCiudades = JSON.parse(ObtenerDeLocalStorage("ciudades"));
-    const index = storedCiudades.indexOf(ciudad);
+  const storedCiudades = JSON.parse(ObtenerDeLocalStorage("ciudades"));
+  const index = storedCiudades.indexOf(ciudad.toLowerCase());
+  if (index !== -1) {
     storedCiudades.splice(index, 1);
     GuardarEnLocalStorage("ciudades", JSON.stringify(storedCiudades));
-    }
+  }
+};
+
+const generarHTMLCiudad = (ciudad, esGuardada) => {
+  return `
+    <div class="card presave-cont shadow-lg">
+        <div class="card-body">
+            ${esGuardada ? '' : `
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-danger" onClick="
+                eliminarCiudad('${ciudad.name}');
+                MostrarPresave();">X</button>
+            </div>
+            `}
+            <div class="d-flex justify-content-start justify-items-center">
+                <img src="http://openweathermap.org/img/wn/${ciudad.weather[0].icon}.png">
+                <h5 class="my-auto">${ciudad.main.temp}°C</h5>
+            </div>
+            <h5 class="card-title">${ciudad.name}</h5>
+        </div>
+    </div>
+    `;
+};
 
 const ActualizarClimaContainer = (clima) => {
   climaContainer.innerHTML = `
-    <div class="card w-75 card-main fw-bold">
+    <div class="card w-75 card-main fw-bold shadow-lg">
         <div class="card-body">
             <div class="d-flex justify-content-between">
                 <div class="d-flex align-items-center">
@@ -65,7 +88,7 @@ const ActualizarClimaContainer = (clima) => {
                 <h2 class="card-title text-center temp">${clima.main.temp}°C</h2>
             </div>
             <div class="d-flex justify-content-center text-center justify-items-center flex-column">
-                <img src="http://openweathermap.org/img/w/${clima.weather[0].icon}.png">
+                <img src="http://openweathermap.org/img/wn/${clima.weather[0].icon}.png">
                 <h5 class="my-auto">${clima.weather[0].main}</h5>
             </div>
             </div>
@@ -83,7 +106,7 @@ const MostrarClimaLocal = async () => {
     const climaCiudad = await ObtenerClima([ciudad]);
     if (climaCiudad[0].cod === "404") {
       alert("Ciudad no encontrada");
-        EliminarDeLocalStorage("ciudad");
+      EliminarDeLocalStorage("ciudad");
       return;
     }
     console.log(climaCiudad);
@@ -93,46 +116,20 @@ const MostrarClimaLocal = async () => {
 
 const ActualizarPresaveContainer = (clima, ciudadMasCaliente) => {
   presaveContainer.innerHTML = `
-    <div class="card most-heat text-light presave-cont">
+    <div class="card most-heat text-danger fw-bold presave-cont shadow-lg">
         <div class="card-body">
             <div class="d-flex justify-content-start justify-items-center">
-            <img src="http://openweathermap.org/img/w/${ciudadMasCaliente.weather[0].icon}.png">
-            <h5 class="my-auto">${ciudadMasCaliente.main.temp}°C</h5>
+            <img src="http://openweathermap.org/img/wn/${ciudadMasCaliente.weather[0].icon}.png">
+            <h4 class="my-auto">${ciudadMasCaliente.main.temp}°C</h4>
             </div>
-            <h5 class="card-title">${ciudadMasCaliente.name}</h5>
+            <h4 class="card-title">${ciudadMasCaliente.name}</h4>
         </div>
     </div>
     `;
 
   clima.forEach((ciudad) => {
-    CIUDADES.includes(ciudad.name) ? 
-        presaveContainer.innerHTML += `
-        <div class="card opacity-75 presave-cont">
-            <div class="card-body">
-                <div class="d-flex justify-content-start justify-items-center">
-                <img src="http://openweathermap.org/img/w/${ciudad.weather[0].icon}.png">
-                <h5 class="my-auto">${ciudad.main.temp}°C</h5>
-                </div>
-                <h5 class="card-title">${ciudad.name}</h5>
-            </div>
-        </div>
-        ` : 
-        presaveContainer.innerHTML += `
-        <div class="card opacity-75 presave-cont">
-            <div class="card-body">
-            <div class="d-flex justify-content-between">
-                <button class="btn btn-danger" onClick="
-                eliminarCiudad('${ciudad.name}');
-                MostrarPresave();">X</button>
-            </div>
-                <div class="d-flex justify-content-start justify-items-center">
-                <img src="http://openweathermap.org/img/w/${ciudad.weather[0].icon}.png">
-                <h5 class="my-auto">${ciudad.main.temp}°C</h5>
-                </div>
-                <h5 class="card-title">${ciudad.name}</h5>
-            </div>
-        </div>
-        `;
+    const esGuardada = CIUDADES.includes(ciudad.name);
+    presaveContainer.innerHTML += generarHTMLCiudad(ciudad, esGuardada);
   });
 };
 
@@ -140,12 +137,12 @@ const MostrarPresave = async () => {
   const storedCiudades = ObtenerDeLocalStorage("ciudades");
   if (storedCiudades) {
     const ciudades = JSON.parse(storedCiudades);
-    ciudades.forEach(ciudad => {
-        if (!CIUDADES.includes(ciudad)) {
-            CIUDADES.push(ciudad);
-        }
+    ciudades.forEach((ciudad) => {
+      if (!CIUDADES.includes(ciudad)) {
+        CIUDADES.push(ciudad);
+      }
     });
-     }
+  }
   presaveContainer.innerHTML = "";
   const clima = await ObtenerClima(CIUDADES);
   const ciudadMasCaliente = clima.reduce((prev, current) =>
@@ -162,27 +159,31 @@ const GuardarCiudad = () => {
   MostrarClimaLocal();
 };
 
-document.getElementById("addCity").addEventListener("click", () => {
-  const ciudad = document.getElementById("city").value;
-  //COMPROBAR QUE NO ESTE EN EL ARRAY DE CIUDADES
+document.getElementById("addCity").addEventListener("click", async () => {
+  let ciudad = document.getElementById("city").value;
+  ciudad = ciudad.toLowerCase();
+  const response = await ObtenerClima([ciudad]);
+  if (response[0].cod === "404") {
+    alert("Ciudad no encontrada");
+    document.getElementById("city").value = "";
+    return;
+  }
   if (CIUDADES.includes(ciudad)) {
-    alert("La ciudad ya esta en la lista");
+    alert("La ciudad ya está en la lista");
     document.getElementById("city").value = "";
     return;
   }
   CIUDADES.push(ciudad);
-  //guardar en local storage pero si ya hay una ciudad guardada, agregarla a la lista
   const storedCiudades = ObtenerDeLocalStorage("ciudades");
   if (storedCiudades) {
-    //guardar las ciudades en un array
     const ciudades = JSON.parse(storedCiudades);
     ciudades.push(ciudad);
     GuardarEnLocalStorage("ciudades", JSON.stringify(ciudades));
   } else {
-    GuardarEnLocalStorage("ciudades", JSON.stringify([ciudad])); // Guardar como array
+    GuardarEnLocalStorage("ciudades", JSON.stringify([ciudad]));
   }
-    MostrarPresave();
-    document.getElementById("city").value = "";
+  MostrarPresave();
+  document.getElementById("city").value = "";
 });
 
 document.getElementById("saveCity").addEventListener("click", GuardarCiudad);

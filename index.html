@@ -7,10 +7,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <nav>
-
-    </nav>
+<body class="mh-100 vh-100">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Clima Finder</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+      </nav>
     <div class="container">
         <div class="row justify-content-between">
             <div class="col-md-6  d-flex flex-column gap-2">
@@ -36,6 +52,54 @@
                     <div id="presaveContainer" class="row gap-2"></div>
             </div>
         </div>
+    </div>
+</div>
+        <footer class="bg-light text-center text-lg-start mt-5">
+            <div class="container p-4">
+              <div class="row">
+                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                  <h5 class="text-uppercase">Clima Finder</h5>
+                  <p>
+                    Encuentra el clima de tus ciudades favoritas de manera rápida y sencilla.
+                  </p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                  <h5 class="text-uppercase">Enlaces</h5>
+                  <ul class="list-unstyled mb-0">
+                    <li>
+                      <a href="#!" class="text-dark">Home</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="text-dark">Features</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="text-dark">Pricing</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="text-dark">Contact</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                  <h5 class="text-uppercase">Contacto</h5>
+                  <ul class="list-unstyled mb-0">
+                    <li>
+                      <a href="#!" class="text-dark">Email</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="text-dark">Teléfono</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="text-dark">Dirección</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="text-center p-3 bg-dark text-light">
+              © 2023 Clima Finder
+            </div>
+          </footer>
     
 <script src="app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
